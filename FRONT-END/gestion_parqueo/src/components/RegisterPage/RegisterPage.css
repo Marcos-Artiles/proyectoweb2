@@ -1,0 +1,118 @@
+/* RegisterPage.css */
+
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url(../../../public/fondo_inicio.jpeg);
+    background-size: cover;
+    background-position: center;
+    color: white;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrar horizontalmente */
+    justify-content: center; /* Centrar verticalmente */
+    min-height: 100vh;
+  }
+  
+  .register-container {
+    max-width: 400px;
+    padding: 20px;
+    border: 1px solid #ede9e9;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.664);
+    margin-top: 80px; /* Ajusta este valor según sea necesario para centrar el contenedor verticalmente */
+    font-family: 'Times New Roman', Times, serif;
+  }
+  
+  .register-header {
+    width: 100%;
+    background-color: rgba(233, 45, 45, 0.94);
+    padding: 15px 0;
+    position: fixed; /* Fijar el encabezado en la parte superior */
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Asegurar que el encabezado esté por encima de otros elementos */
+  }
+  
+  .register-nav {
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center;
+    height: 100%;
+    font-family:'Times New Roman', Times, serif;
+  }
+  
+  .register-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .register-nav ul li {
+    display: inline-block;
+    margin-right: 20px;
+  }
+  
+  .register-nav ul li a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .register-logo {
+    position: relative;
+    text-align: center;
+  }
+  
+  .register-logo img {
+    width: 200px;
+    height: auto;
+  }
+  
+  .register-form-group {
+    margin-bottom: 20px;
+  }
+  
+  .register-label {
+    color: white;
+  }
+  
+  .register-input-text,
+  .register-input-password {
+    width: 100%;
+    padding: 8px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+  }
+  
+  .register-button {
+    padding: 10px 20px;
+    background-color: #6196ce;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 20px;
+    box-shadow: 7px, 13px, 37px #000;
+  }
+  
+  .register-button:hover {
+    background-color: #4774a3;
+  }
+  
+  .register-success-msg {
+    color: green;
+    font-weight: bold;
+  }
+  
+  .register-footer {
+    background-color: rgb(0, 0, 0);
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  }
+  

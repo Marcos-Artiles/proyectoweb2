@@ -1,0 +1,167 @@
+/* Estilos para UserProfile */
+
+.perfil-container {
+  max-width: 400px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  margin-left: 20px; /* Espacio a la izquierda para separar del borde */
+  float: left; /* Alinear a la izquierda */
+}
+
+.perfil-container header {
+  width: 100%;
+  background-color: red;
+  padding: 15px 0;
+  position: fixed;
+  top: 0;
+  left: 0; /* Pegado a la izquierda de la pantalla */
+  z-index: 1000;
+}
+
+.perfil-container nav {
+  text-align: center;
+}
+
+.perfil-container nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex; /* Cambio a flexbox para centrar */
+  justify-content: center; /* Centrar elementos horizontalmente */
+}
+
+.perfil-container nav ul li {
+  margin-right: 20px;
+}
+
+.perfil-container nav ul li a {
+  color: white;
+  text-decoration: none;
+  display: block; /* Convertir en bloque para centrar horizontalmente */
+  padding: 10px 20px; /* Añadir padding para espacio alrededor del texto */
+}
+
+.perfil-container nav ul li a:hover {
+  color: #ccc;
+}
+
+.perfil-container .form-group {
+  margin-bottom: 20px;
+}
+
+.perfil-container label {
+  color: white;
+}
+
+.perfil-container input[type="text"],
+.perfil-container input[type="password"],
+.perfil-container input[type="color"] {
+  width: calc(100% - 16px); /* Ajuste para el padding */
+  padding: 8px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  font-family:'Times New Roman', Times, serif;
+}
+
+.perfil-container button {
+  width: 100%;
+  padding: 10px 0;
+  background-color: #78b0eb;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.perfil-container button:hover {
+  background-color: #78b0eb;
+}
+
+.perfil-container h2 {
+  text-align: center;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.perfil-container footer {
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0; /* Pegado a la izquierda de la pantalla */
+  z-index: 1000;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.additional-info {
+  max-width: 400px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: rgba(45, 43, 43, 0.597);
+  margin-left: 20px; /* Espacio a la izquierda para separar del perfil-container */
+  float: right; /* Alinear a la derecha */
+  margin-right: 20px; /* Espacio a la derecha para separar del borde */
+  margin-top: 60px; /* Ajuste de margen superior para alineación */
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.additional-info h3 {
+  color: white;
+}
+
+.additional-info p {
+  color: white;
+  margin-top: 10px;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.additional-info button {
+  width: 100%;
+  padding: 10px 0;
+  background-color: #86bffd;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.additional-info button:hover {
+  background-color: #8ebff4;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+/* Estilos para el nuevo div de plazas disponibles */
+.plazas-disponibles {
+  max-width: 400px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  margin: 20px auto; /* Centrado horizontal */
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.plazas-disponibles h2 {
+  color: white;
+  text-align: center;
+  font-family:'Times New Roman', Times, serif;
+}
+
+.plazas-disponibles ul {
+  list-style: none;
+  padding: 0;
+  font-family:'Times New Roman', Times, serif;
+}
+
+.plazas-disponibles ul li {
+  color: white;
+  margin-bottom: 10px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}

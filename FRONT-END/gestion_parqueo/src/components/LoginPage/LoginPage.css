@@ -1,0 +1,116 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url(../../../public/fondo_inicio.jpeg);
+    background-size: cover;
+    background-position: center;
+    color: white;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra verticalmente el contenido */
+}
+
+header {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.236);
+    padding: 15px 0;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+}
+
+.contenedor_nav {
+    background-color: rgb(219, 39, 39);
+    padding: 30px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+nav {
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.main-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.login-container {
+    max-width: 400px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.677);
+    position: relative;
+    z-index: 1;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    color: white;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: 100%;
+    padding: 10px 0;
+    background-color: #47a8cf;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+h2 {
+    text-align: center;
+}
+
+footer {
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    z-index: 1000;
+}
