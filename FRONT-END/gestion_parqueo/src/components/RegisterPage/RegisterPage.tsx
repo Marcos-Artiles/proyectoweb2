@@ -4,11 +4,10 @@ import axiosClient from '../../backend/conexion'; // Asegúrate de que la ruta a
 
 const RegisterPage: React.FC = () => {
   const [formData, setFormData] = useState({
-    correo: '',
+    name: '',
+    email: '',
     password: '',
     confirmPassword: '',
-    matricula: '',
-    colorCarro: '',
   });
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -18,22 +17,23 @@ const RegisterPage: React.FC = () => {
     event.preventDefault();
     if (validateForm()) {
       try {
+        // Primero, solicitar el token CSRF
+        await axiosClient.get('/sanctum/csrf-cookie');
+
         // Realizar una solicitud POST al backend para registrar el usuario
-        const response = await axiosClient.post('/registro', {
-          correo: formData.correo,
+        const response = await axiosClient.post('/api/registro', {
+          name: formData.name,
+          email: formData.email,
           password: formData.password,
-          matricula: formData.matricula,
-          colorCarro: formData.colorCarro,
         });
 
         setSuccessMessage('Registro exitoso. ¡Bienvenido!');
         setErrorMessage('');
         setFormData({
-          correo: '',
+          name: '',
+          email: '',
           password: '',
           confirmPassword: '',
-          matricula: '',
-          colorCarro: '',
         });
       } catch (error) {
         setErrorMessage('Hubo un error al registrar. Por favor, intenta nuevamente.');
@@ -44,19 +44,12 @@ const RegisterPage: React.FC = () => {
   };
 
   const validateForm = () => {
-    const { colorCarro, password, confirmPassword, matricula } = formData;
-    const lettersOnly = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    const { password, confirmPassword } = formData;
 
-    if (!lettersOnly.test(colorCarro)) {
-      setErrorMessage('El campo Color del Carro solo puede contener letras.');
-      return false;
-    }
     if (password !== confirmPassword) {
       setErrorMessage('Las contraseñas no coinciden.');
       return false;
     }
-
-    // Puedes agregar más validaciones si es necesario
     return true;
   };
 
@@ -85,8 +78,8 @@ const RegisterPage: React.FC = () => {
               className="register-input-text" 
               type="email" 
               id="correo" 
-              name="correo" 
-              value={formData.correo}
+              name="email" 
+              value={formData.email}
               onChange={handleChange}
               required 
             />
@@ -116,25 +109,13 @@ const RegisterPage: React.FC = () => {
             />
           </div>
           <div className="register-form-group">
-            <label className="register-label" htmlFor="matricula">Matrícula:</label>
+            <label className="register-label" htmlFor="name">Nombre:</label>
             <input 
               className="register-input-text" 
               type="text" 
-              id="matricula" 
-              name="matricula"
-              value={formData.matricula}
-              onChange={handleChange}
-              required 
-            />
-          </div>
-          <div className="register-form-group">
-            <label className="register-label" htmlFor="colorCarro">Color del Carro:</label>
-            <input 
-              className="register-input-text" 
-              type="text" 
-              id="colorCarro" 
-              name="colorCarro"
-              value={formData.colorCarro}
+              id="name" 
+              name="name"
+              value={formData.name}
               onChange={handleChange}
               required 
             />

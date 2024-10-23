@@ -1,34 +1,50 @@
-// LoginPage.tsx
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css'; // Archivo de estilos CSS local
+import axiosClient from '../../backend/conexion'; // Importa Axios configurado
+import { AxiosError } from 'axios';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const adminCredentials = JSON.parse(localStorage.getItem('adminCredentials') || '{}');
-    console.log('Credenciales del administrador en localStorage:', adminCredentials);
+    try {
+      // Hacer una solicitud POST al backend para iniciar sesión
+      const response = await axiosClient.post('/api/login', { email, password });
+      
+      // Obtener el token del usuario si la autenticación fue exitosa
+      const { token, user } = response.data;
 
-    if (email === adminCredentials.email && password === adminCredentials.password) {
-      console.log('Credenciales de administrador ingresadas correctamente.');
-      navigate('/AdministratorPage'); 
-      return;
-    }
+      // Almacenar el token en localStorage
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
 
-    const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-    const usuario = usuarios.find((user: any) => user.correo === email && user.password === password);
-
-    if (usuario) {
-      localStorage.setItem('currentUser', JSON.stringify(usuario));
-      navigate('/UserProfile'); 
-    } else {
-      alert('Credenciales incorrectas. Por favor, verifique su correo y contraseña.');
+      // Redirigir al usuario según su rol o página principal
+      if (user.role === 'admin') {
+        navigate('/AdministratorPage');
+      } else {
+        navigate('/UserProfile');
+      }
+      
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        // Manejo de errores específico de Axios
+        if (error.response && error.response.status === 401) {
+          setErrorMessage('Credenciales incorrectas. Por favor, verifica tu correo y contraseña.');
+        } else {
+          setErrorMessage('Hubo un error al iniciar sesión. Intenta nuevamente.');
+        }
+        console.error('Error al iniciar sesión:', error);
+      } else {
+        // Manejo de errores genérico
+        setErrorMessage('Hubo un error inesperado. Intenta nuevamente.');
+        console.error('Error inesperado:', error);
+      }
     }
   };
 
@@ -48,27 +64,29 @@ const LoginPage: React.FC = () => {
         <div className="login-container">
           <h2>Iniciar Sesión</h2>
 
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
+
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="correo">Correo:</label>
-              <input 
-                type="text" 
-                id="correo" 
-                name="correo" 
-                required 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
+              <input
+                type="text"
+                id="correo"
+                name="correo"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="form-group">
               <label htmlFor="password">Contraseña:</label>
-              <input 
-                type="password" 
-                id="password" 
-                name="password" 
-                required 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
+              <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <button type="submit">Iniciar Sesión</button>

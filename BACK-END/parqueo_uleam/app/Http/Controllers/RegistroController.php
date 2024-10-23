@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Registro;
+use App\Models\User;
 
 class RegistroController extends Controller
 {
@@ -11,19 +11,17 @@ class RegistroController extends Controller
     {
         // Validar los datos que llegan por la solicitud
         $request->validate([
-            'correo_registro' => 'required|email|unique:Registro,correo_registro',
-            'password_registro' => 'required',
-            'matricula_registro' => 'required',
-            'color_carro_registro' => 'required',
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required',
         ]);
 
         // Insertar el registro en la base de datos
-        $registro = new Registro();
-        $registro->correo_registro = $request->correo_registro;
-        $registro->password_registro = bcrypt($request->password_registro); // Encriptar la contraseña
-        $registro->matricula_registro = $request->matricula_registro;
-        $registro->color_carro_registro = $request->color_carro_registro;
-        $registro->save();
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password); // Encriptar la contraseña
+        $user->save();
 
         // Responder con un mensaje de éxito
         return response()->json(['message' => 'Registro creado con éxito'], 201);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './UserProfile.css'; // Importa el archivo de estilos CSS local
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axiosClient from "../../backend/conexion"; // Asegúrate de que la ruta a `conexion.js` sea correcta.
 
 const UserProfile: React.FC = () => {
@@ -12,6 +12,7 @@ const UserProfile: React.FC = () => {
   const [plazaAsignada, setPlazaAsignada] = useState<string>(''); // Estado para la plaza asignada
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate(); // Hook para navegar a otras rutas
 
   // Usamos useEffect para cargar el perfil del usuario desde el backend
   useEffect(() => {
@@ -38,6 +39,18 @@ const UserProfile: React.FC = () => {
     fetchUserProfile();
   }, []);
 
+  // Función para manejar el cierre de sesión
+  const handleLogout = async () => {
+    try {
+      await axiosClient.post('/logout'); // Llamada a la función logout del backend
+      localStorage.removeItem('token'); // Remover el token del localStorage
+      navigate('/'); // Redirigir a la página de inicio
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      setError('Error al cerrar sesión.');
+    }
+  };
+
   // Función para manejar el envío del formulario y actualizar los datos en el backend
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Evitar que el formulario se envíe automáticamente
@@ -52,7 +65,7 @@ const UserProfile: React.FC = () => {
           plaza: plazaAsignada, // Actualizar la plaza asignada si es necesario
         };
         // Enviar los datos al backend
-        const response = await axiosClient.put('/profile/update', payload);
+        await axiosClient.put('/profile/update', payload);
         alert("Datos actualizados con éxito.");
       } catch (error) {
         setError("Error al actualizar los datos.");
@@ -91,7 +104,9 @@ const UserProfile: React.FC = () => {
           <header>
             <nav>
               <ul>
-                <li><a href="/">Inicio</a></li>
+                <li>
+                  <button onClick={handleLogout}>Inicio</button> {/* Botón que llama a handleLogout */}
+                </li>
               </ul>
             </nav>
           </header>
