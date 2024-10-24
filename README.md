@@ -1,8 +1,8 @@
-Descripción del Proyecto
-  Este proyecto es una aplicación web de administración de parqueos, desarrollada con React en el frontend y Laravel en el backend. El sistema permite a los usuarios registrarse, iniciar sesión, y gestionar su perfil. La base de datos utilizada es PostgreSQL.
+Descripción del Proyecto:
+    Este proyecto es una aplicación web de administración de parqueos, desarrollada con React en el frontend y Laravel en el backend. El sistema permite a los usuarios registrarse, iniciar sesión, y gestionar su          perfil. La base de datos utilizada es PostgreSQL.
 
-Funcionalidades Activas
-    Registro de Usuarios: Los usuarios pueden registrarse en la plataforma con los campos de correo, contraseña, matrícula y color del carro. Esta información es almacenada en una tabla en PostgreSQL. Inicio de Sesión: Implementación de un sistema de autenticación con tokens de acceso generados mediante Laravel Sanctum. El usuario puede iniciar sesión, y se guarda un token en el local storage del navegador. Perfil de Usuario: Los usuarios autenticados pueden acceder a su perfil, donde se muestra su correo, matrícula, color del carro y plaza de estacionamiento asignada. También pueden actualizar estos datos. Cierre de Sesión: Los usuarios pueden cerrar sesión, lo que revoca el token de acceso y los desconecta del sistema. Validación de Acceso: Las rutas protegidas, como el perfil de usuario, solo son accesibles si el usuario ha iniciado sesión.
+Funcionalidades Activas:
+    Registro de Usuarios: Los usuarios pueden registrarse en la plataforma con los campos de correo, contraseña, matrícula y color del carro. Esta información es almacenada en una tabla en PostgreSQL. Inicio de           Sesión: Implementación de un sistema de autenticación con tokens de acceso generados mediante Laravel Sanctum. El usuario puede iniciar sesión, y se guarda un token en el local storage del navegador. Perfil de        Usuario: Los usuarios autenticados pueden acceder a su perfil, donde se muestra su correo, matrícula, color del carro y plaza de estacionamiento asignada. También pueden actualizar estos datos. Cierre de Sesión:      Los usuarios pueden cerrar sesión, lo que revoca el token de acceso y los desconecta del sistema. Validación de Acceso: Las rutas protegidas, como el perfil de usuario, solo son accesibles si el usuario ha            iniciado sesión.
 
 Requisitos
   •	Node.js (v14 o superior)
