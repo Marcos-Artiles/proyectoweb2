@@ -13,36 +13,46 @@ Requisitos
 
 
 Instrucciones para Ejecutar el Proyecto
-  1.	 Clonar el Repositorio
-    •	git clone https://github.com/tu_usuario/proyecto_parqueo.git
-    •	cd proyecto_parqueo
+1. Clonar el Repositorio
+   
+       git clone https://github.com/tu_usuario/proyecto_parqueo.git
+       cd proyecto_parqueo
 
-2.Configuración del Backend (Laravel)
-•	En el directorio backend/, ejecutar los siguientes comandos:
-composer install
-cp .env.example .env
-php artisan key:generate
-•	Configurar el archivo .env para conectar con la base de datos PostgreSQL, asegurándote de modificar las variables DB_CONNECTION, DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME y DB_PASSWORD.
-•	Migrar las tablas a la base de datos:
-php artisan migrate
-3. Configuración del Frontend (React)
-•	En el directorio frontend/, ejecutar los siguientes comandos:
-npm install
-cp .env.example .env
-•	Configurar la variable BASE_URL en el archivo .env del frontend con la URL del backend, por ejemplo:
-BASE_URL=http://127.0.0.1:8000
-4. Publicar Configuración de CORS
-•	En el directorio backend/, publica la configuración de CORS para habilitar peticiones entre el frontend y el backend:
-php artisan vendor:publish --tag=cors
-5. Iniciar los Servidores
-•	Backend: En el directorio backend/, iniciar el servidor de Laravel:
-php artisan serve
-•	Frontend: En el directorio frontend/, iniciar el servidor de React:
-npm start
+2.  Configuración del Backend (Laravel)
+   
+        •	En el directorio backend/, ejecutar los siguientes comandos:
+            composer install
+            cp .env.example .env
+            php artisan key:generate
+    
+          •	Configurar el archivo .env para conectar con la base de datos PostgreSQL, asegurándote de modificar las variables DB_CONNECTION, DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME y DB_PASSWORD.
+    
+          •	Migrar las tablas a la base de datos:
+              php artisan migrate
+    
+3.  Configuración del Frontend (React)
 
-6. Acceso al Proyecto
-•	Frontend: http://localhost:3000
-•	Backend: http://127.0.0.1:8000
-Próximas Funcionalidades
-•	Gestión de plazas de parqueo.
-•	Implementación de un panel de administrador para monitorear el sistema.
+        •  En el directorio frontend/, ejecutar los siguientes comandos:
+            npm install
+            cp .env.example .env
+    
+         •  Configurar la variable BASE_URL en el archivo .env del frontend con la URL del backend, por ejemplo:
+              BASE_URL=http://127.0.0.1:8000
+    
+5.  Publicar Configuración de CORS
+   
+        •	En el directorio backend/, publica la configuración de CORS para habilitar peticiones entre el frontend y el backend:
+            php artisan vendor:publish --tag=cors
+    
+6. Iniciar los Servidores
+   
+        •	Backend: En el directorio backend/, iniciar el servidor de Laravel:
+            php artisan serve
+
+        •	Frontend: En el directorio frontend/, iniciar el servidor de React:
+            npm start
+
+7. Acceso al Proyecto
+   
+        •	Frontend: http://localhost:3000
+        •	Backend: http://127.0.0.1:8000
