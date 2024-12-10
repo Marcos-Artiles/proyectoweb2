@@ -27,7 +27,7 @@ class PlazaController extends Controller
             $plazas = Plaza::where('disponible', true)->get();
             return response()->json($plazas);
         }else{
-            return response()->json(['message' => 'Usted no es administrador'], 201);
+            return response()->json(['message' => 'Acceso no autorizado'], 201);
         }
 
     }
