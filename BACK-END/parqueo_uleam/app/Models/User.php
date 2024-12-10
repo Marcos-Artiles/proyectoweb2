@@ -2,22 +2,31 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+// Asegúrate de importar el modelo Plaza
+use App\Models\Plaza;
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    // Relación uno a uno con la plaza
+    public function plaza()
+    {
+        return $this->belongsTo(Plaza::class, 'plaza_id'); // Aquí se establece la relación
+        return $this->hasMany(Soporte::class);
+    }
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $table='users';
+    protected $table = 'users';
     protected $fillable = [
         'name',
         'email',
