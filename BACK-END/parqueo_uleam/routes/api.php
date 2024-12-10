@@ -23,7 +23,6 @@ use App\Http\Controllers\ReporteController;
 //rutas publicas
 Route::post('/login', [AuthController::class, 'login']); //iniciar sesion
 Route::post('/registro', [RegistroController::class, 'store']); //registrarse
-Route::get('/plazas', [PlazaController::class, 'index']); // Ver plazas disponibles
 
 Route::middleware('auth:sanctum')->group(function(){
     //manejo del perfil
@@ -31,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/profile', [AuthController::class, 'profile']); //obtener perfil
 
     //manejo de plazas
+    Route::get('/plazas', [PlazaController::class, 'index']); // Ver plazas disponibles
     Route::post('/plazas', [PlazaController::class, 'store']); // Crear una nueva plaza
     Route::delete('/plazas/{id}', [PlazaController::class, 'deletePlazas']); //Borrar una plaza
     Route::put('/plaza/{id}', [PlazaController::class, 'update']); //actualizar plaza
