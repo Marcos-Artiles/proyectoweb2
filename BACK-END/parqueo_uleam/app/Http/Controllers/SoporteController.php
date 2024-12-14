@@ -2,14 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Soporte; // Importar el modelo Soporte
-use App\Models\User;    // Importar el modelo User
-use App\Models\Plaza;   // Importar el modelo Plaza
+use App\Models\Soporte;
+use App\Models\User;
+use App\Models\Plaza;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class SoporteController extends Controller
 {
+    // Verifica si el usuario es administrador
+    private function verificarAdministrador()
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Usuario no autenticado'], 401);
+        }
+
+        if ($user->isAdmin != 1) {
+            return response()->json(['message' => 'Acceso denegado'], 403);
+        }
+
+        return null; // Retorna null si la verificación es exitosa
+    }
+
     // Crear una solicitud de soporte
     public function store(Request $request)
     {
@@ -28,11 +44,8 @@ class SoporteController extends Controller
     // Ver todas las solicitudes de soporte (solo para el administrador)
     public function index()
     {
-        $user = auth()->user();
-
-        if (!$user || $user->isAdmin != 1) {
-            return response()->json(['message' => 'Acceso denegado'], 403);
-        }
+        $verificacion = $this->verificarAdministrador();
+        if ($verificacion) return $verificacion;
 
         $soportes = Soporte::with('user')->get();
         return response()->json(['soportes' => $soportes]);
@@ -41,6 +54,9 @@ class SoporteController extends Controller
     // Actualizar el estado de una solicitud de soporte
     public function update(Request $request, $id)
     {
+        $verificacion = $this->verificarAdministrador();
+        if ($verificacion) return $verificacion;
+
         $request->validate([
             'atendido' => 'required|boolean', // Solo puede ser true o false
         ]);
@@ -57,38 +73,42 @@ class SoporteController extends Controller
         return response()->json(['message' => 'Estado de la solicitud actualizado', 'soporte' => $soporte], 200);
     }
 
+    // Asignar una plaza a un usuario
     public function asignarPlaza(Request $request)
     {
+        $verificacion = $this->verificarAdministrador();
+        if ($verificacion) return $verificacion;
+
         // Validar los datos de la solicitud
         $request->validate([
             'codigo_plaza' => 'required|string|max:10', // Código de la plaza a asignar
             'user_id' => 'required|exists:users,id',    // Usuario al que se asignará la plaza
         ]);
-    
+
         // Buscar la plaza solicitada
         $plaza = Plaza::where('codigo_plaza', $request->codigo_plaza)->first();
-    
+
         // Verificar si la plaza existe y está disponible
         if (!$plaza || !$plaza->disponible) {
             return response()->json(['message' => 'La plaza no está disponible o no existe'], 400);
         }
-    
+
         // Buscar al usuario
         $usuario = User::find($request->user_id);
-    
+
         // Verificar si el usuario ya tiene una plaza asignada
         if ($usuario->plaza_id) {
             return response()->json(['message' => 'El usuario ya tiene una plaza asignada'], 400);
         }
-    
+
         // Asignar la plaza al usuario
         $usuario->plaza_id = $plaza->id;
         $usuario->save();
-    
+
         // Actualizar la disponibilidad de la plaza
         $plaza->disponible = false;
         $plaza->save();
-    
+
         // Retornar una respuesta de éxito
         return response()->json([
             'message' => 'Plaza asignada con éxito',
@@ -96,5 +116,4 @@ class SoporteController extends Controller
             'plaza' => $plaza
         ], 200);
     }
-    
 }

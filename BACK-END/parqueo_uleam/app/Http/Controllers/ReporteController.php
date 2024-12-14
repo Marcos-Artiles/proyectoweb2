@@ -7,11 +7,32 @@ use App\Models\User;
 use App\Models\Plaza;
 use App\Models\Soporte;
 use App\Models\Reporte;
+use Illuminate\Support\Facades\Auth;
 
 class ReporteController extends Controller
 {
+    // Verifica si el usuario es administrador
+    private function verificarAdministrador()
+    {
+        $user = Auth::user();
+        
+        if (!$user) {
+            return response()->json(['message' => 'Usuario no autenticado'], 401);
+        }
+        
+        if ($user->isAdmin != 1) {
+            return response()->json(['message' => 'Acceso no autorizado'], 403);
+        }
+        
+        return null; // Retorna null si la verificación es exitosa
+    }
+
+    // Generar un reporte
     public function generarReporte()
     {
+        $verificacion = $this->verificarAdministrador();
+        if ($verificacion) return $verificacion;
+
         // Recopilar datos
         $totalUsuarios = User::count();
         $usuariosNormales = User::where('isAdmin', 0)->count();
@@ -41,8 +62,12 @@ class ReporteController extends Controller
         return response()->json(['message' => 'Reporte generado con éxito', 'reporte' => $reporte], 201);
     }
 
+    // Obtener todos los reportes
     public function obtenerReportes()
     {
+        $verificacion = $this->verificarAdministrador();
+        if ($verificacion) return $verificacion;
+
         $reportes = Reporte::all();
         return response()->json($reportes, 200);
     }

@@ -7,7 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PlazaController;
 use App\Http\Controllers\SoporteController;
 use App\Http\Controllers\ReporteController;
-
+use App\Http\Controllers\ResetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::delete('/plazas/{id}', [PlazaController::class, 'deletePlazas']); //Borrar una plaza
     Route::put('/plaza/{id}', [PlazaController::class, 'update']); //actualizar plaza
     Route::put('/plaza/{id}/disponibilidad', [PlazaController::class, 'updateDisponibilidad']); //actualizar disponibilidad
+    Route::post('/reset-plazas', [ResetController::class, 'resetPlazas']);
 
     //manejo de soporte
     Route::post('/soporte', [SoporteController::class, 'store']); // Crear solicitud de soporte
