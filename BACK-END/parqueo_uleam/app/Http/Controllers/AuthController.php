@@ -53,17 +53,33 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        // Revocar el token
-        $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Sesión cerrada!'], 200);
+        $user = $request->user();
+    
+        // Revocar el token del usuario
+        $user->currentAccessToken()->delete();
+    
+        // Si el usuario tiene una plaza asignada, liberar la plaza
+        if ($user->plaza_id) {
+            $plaza = Plaza::find($user->plaza_id);
+            if ($plaza) {
+                $plaza->disponible = true; // Marcar la plaza como disponible
+                $plaza->save();
+            }
+    
+            // Eliminar la plaza asignada del usuario
+            $user->plaza_id = null;
+            $user->save();
+        }
+    
+        return response()->json(['message' => 'Sesión cerrada y plaza liberada'], 200);
     }
 
     public function profile(Request $request)
     {
         // Obtener el usuario autenticado
-        $user = $request->user();
-
-        // Retornar la información del usuario
+        $user = $request->user()->load('plaza'); // Cargar la relación con la plaza
+    
+        // Retornar la información del usuario junto con la plaza
         return response()->json([
             'success' => 'true',
             'user' => $user,

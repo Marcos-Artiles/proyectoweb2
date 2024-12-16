@@ -7,7 +7,7 @@ const UserProfile: React.FC = () => {
   const [correo, setCorreo] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
-  const [plazaAsignada, setPlazaAsignada] = useState<string>(''); // Estado para la plaza asignada
+  const [plazaAsignada, setPlazaAsignada] = useState<string>('Sin plaza asignada'); // Estado inicial para la plaza asignada
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate(); // Hook para navegar a otras rutas
@@ -20,7 +20,8 @@ const UserProfile: React.FC = () => {
         const token = localStorage.getItem('token');
         
         if (!token) {
-          setError('No se ha encontrado el token de autenticación');
+          setError('No se ha encontrado el token de autenticación.');
+          navigate('/login'); // Redirige al login si no hay token
           return;
         }
 
@@ -29,9 +30,10 @@ const UserProfile: React.FC = () => {
             Authorization: `Bearer ${token}`, // Aquí agregamos el token en el encabezado
           },
         });
-        
-        setCorreo(response.data.user.email);
-        setPlazaAsignada(response.data.user.plaza ? response.data.user.plaza.codigo_plaza : 'Sin plaza asignada');
+
+        const userData = response.data.user;
+        setCorreo(userData.email);
+        setPlazaAsignada(userData.plaza ? userData.plaza.codigo_plaza : 'Sin plaza asignada'); // Obtener el código de la plaza
       } catch (error) {
         setError('Error al cargar el perfil del usuario.');
         console.error(error);
@@ -41,14 +43,30 @@ const UserProfile: React.FC = () => {
     };
 
     fetchUserProfile();
-  }, []);
+  }, [navigate]);
 
-  // Función para manejar el cierre de sesión
   const handleLogout = async () => {
     try {
-      await axiosClient.post('/logout'); // Llamada a la función logout del backend
-      localStorage.removeItem('token'); // Remover el token del localStorage
-      navigate('/'); // Redirigir a la página de inicio
+      const token = localStorage.getItem('token');
+  
+      if (!token) {
+        setError('No se encontró un token de sesión.');
+        return;
+      }
+  
+      // Enviar solicitud de cierre de sesión al backend
+      await axiosClient.post('/logout', {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      // Eliminar datos del almacenamiento local
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+  
+      // Redirigir al usuario a la página de inicio
+      navigate('/');
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
       setError('Error al cerrar sesión.');
@@ -60,14 +78,25 @@ const UserProfile: React.FC = () => {
     event.preventDefault(); // Evitar que el formulario se envíe automáticamente
     if (validateForm()) {
       try {
-        setLoading(true);
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+          setError('No se encontró un token de sesión.');
+          return;
+        }
+
         const payload = {
           correo,
           password,
-          plaza: plazaAsignada, // Actualizar la plaza asignada si es necesario
         };
+
         // Enviar los datos al backend
-        await axiosClient.put('/profile/update', payload);
+        await axiosClient.put('/profile/update', payload, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         alert("Datos actualizados con éxito.");
       } catch (error) {
         setError("Error al actualizar los datos.");

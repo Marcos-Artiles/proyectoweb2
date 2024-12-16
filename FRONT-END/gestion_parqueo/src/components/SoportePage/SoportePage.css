@@ -3,26 +3,28 @@
 .SoportePage {
   margin: 0;
   padding: 0;
-  background-image: url(../../../public/fondo.jpg);
+  background-image: url(../../../public/fondo_inicio.jpeg);
   background-size: cover;
   background-position: center;
-  color: white;
+  color: rgb(248, 67, 67);
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  font-size: 30px; /* Tamaño de letra general */
 }
 
 header {
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 15px 0;
+  background-color: rgb(241, 54, 54);
+  padding: 35px 0;
   display: flex; /* Usamos flexbox para centrar los elementos */
   justify-content: center; /* Centramos horizontalmente */
+  font-size: 20px; /* Tamaño de letra en el header */
 }
 
 nav {
-  text-align: center;
+  text-align: justify;
 }
 
 nav ul {
@@ -33,12 +35,13 @@ nav ul {
 
 nav ul li {
   display: inline-block;
-  margin-right: 20px;
+  margin-right: 25px;
 }
 
 nav ul li a {
-  color: white;
+  color: rgb(241, 221, 221);
   text-decoration: none;
+  font-size: 30px; /* Tamaño de letra de los enlaces */
 }
 
 main {
@@ -47,42 +50,49 @@ main {
   justify-content: center;
   align-items: center;
   text-align: center;
+  position: relative;
+  font-size: 50px; /* Tamaño de letra en el contenido principal */
 }
 
 form {
-  max-width: 400px;
+  max-width: 600px;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: rgba(0, 0, 0, 0.5);
-  margin: 20px auto;
+  border: 1px solid #2843ed;
+  border-radius: 1px;
+  background-color: rgba(10, 11, 11, 0.687);
+  margin: auto;
+  font-size: 50px; /* Tamaño de letra en el formulario */
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 }
 
 label {
-  color: white;
+  color: rgb(245, 237, 237);
+  font-size: 30px; /* Tamaño de letra en los labels */
+  position: sticky;
 }
 
 textarea {
   width: 100%;
   padding: 8px;
   border-radius: 3px;
-  border: 1px solid #ccc;
+  border: 1px solid #ece7e7;
   resize: vertical; /* Permitir redimensionar verticalmente */
+  font-size: 30px; /* Tamaño de letra en el textarea */
 }
 
 button {
   width: 100%;
   padding: 10px 0;
   background-color: #007bff;
-  color: white;
+  color: rgb(232, 221, 221);
   border: none;
   border-radius: 3px;
   cursor: pointer;
   margin-top: 10px;
+  font-size: 16px; /* Tamaño de letra en el botón */
 }
 
 button:hover {
@@ -91,13 +101,15 @@ button:hover {
 
 footer {
   background-color: rgba(0, 0, 0, 0.5);
-  color: white;
+  color: rgb(248, 235, 235);
   text-align: center;
   padding: 15px 0;
+  font-size: 14px; /* Tamaño de letra en el footer */
 }
 
 .mensaje-confirmacion {
   margin-top: 10px;
-  color: green;
+  color: rgb(186, 205, 186);
   font-weight: bold;
+  font-size: 16px; /* Tamaño de letra en el mensaje de confirmación */
 }

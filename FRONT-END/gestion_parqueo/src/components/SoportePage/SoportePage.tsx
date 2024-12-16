@@ -3,16 +3,14 @@ import './SoportePage.css'; // Asegúrate de importar tu archivo CSS local
 
 const SoportePage: React.FC = () => {
   const [correo, setCorreo] = useState('');
-  const [matricula, setMatricula] = useState('');
   const [solicitud, setSolicitud] = useState('');
   const [mensajeConfirmacion, setMensajeConfirmacion] = useState('');
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    guardarSolicitud(correo, matricula, solicitud);
+    guardarSolicitud(correo, solicitud);
     setMensajeConfirmacion('Tu solicitud ha sido enviada correctamente.');
     setCorreo('');
-    setMatricula('');
     setSolicitud('');
   };
 
@@ -20,17 +18,13 @@ const SoportePage: React.FC = () => {
     setCorreo(event.target.value);
   };
 
-  const handleChangeMatricula = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMatricula(event.target.value);
-  };
-
   const handleChangeSolicitud = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setSolicitud(event.target.value);
   };
 
-  const guardarSolicitud = (correo: string, matricula: string, solicitud: string) => {
+  const guardarSolicitud = (correo: string, solicitud: string) => {
     const solicitudes = JSON.parse(localStorage.getItem('solicitudes') || '[]');
-    solicitudes.push({ correo, matricula, solicitud });
+    solicitudes.push({ correo, solicitud });
     localStorage.setItem('solicitudes', JSON.stringify(solicitudes));
   };
 
@@ -39,7 +33,7 @@ const SoportePage: React.FC = () => {
       <header>
         <nav>
           <ul>
-            <li><a href="/">Inicio</a></li>
+            <li><a href="/UserProfile">Retroceder</a></li>
           </ul>
         </nav>
       </header>
@@ -52,10 +46,6 @@ const SoportePage: React.FC = () => {
             <input type="text" id="correo" name="correo" value={correo} onChange={handleChangeCorreo} required />
           </div>
           <div className="form-group">
-            <label htmlFor="matricula">Matrícula:</label>
-            <input type="text" id="matricula" name="matricula" value={matricula} onChange={handleChangeMatricula} required />
-          </div>
-          <div className="form-group">
             <label htmlFor="solicitud">Escribe tu solicitud:</label>
             <textarea id="solicitud" name="solicitud" value={solicitud} onChange={handleChangeSolicitud} rows={4} required />
           </div>
@@ -65,7 +55,7 @@ const SoportePage: React.FC = () => {
       </main>
 
       <footer>
-        <p>&copy; 2024 Artiles Enriquez Marcos Javier. Todos los derechos reservados.</p>
+        <p>&copy; 2024 Grupo 8, Web 2. Todos los derechos reservados.</p>
       </footer>
     </div>
   );

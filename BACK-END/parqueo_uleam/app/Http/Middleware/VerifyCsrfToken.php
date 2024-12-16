@@ -16,5 +16,9 @@ class VerifyCsrfToken extends Middleware
         'api/login',
         'api/logout',
         'api/profile',
+        'api/reportes',
+        'api/plazas',
+        'api/plaza',
+        'api/reset-plazas',
     ];
 }

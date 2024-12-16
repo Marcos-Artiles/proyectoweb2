@@ -2,7 +2,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-image: url(../../../public/fondo.jpg);
+    background-image: url(../../../public/fondo_inicio.jpeg);
     background-size: cover;
     background-position: center;
     color: white;
@@ -44,18 +44,28 @@ main {
     justify-content: center;
     align-items: center;
     text-align: center;
+    padding: 20px;
 }
 
 .plaza-form {
-    max-width: 400px;
+    max-width: 500px;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
 }
 
 h1 {
     margin-top: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+h2 {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .form-group {
@@ -64,13 +74,16 @@ h1 {
 
 label {
     color: white;
+    font-size: 16px;
 }
 
-input[type="text"] {
+input[type="text"], input[type="password"], select {
     width: 100%;
     padding: 8px;
     border-radius: 3px;
     border: 1px solid #ccc;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: black;
 }
 
 button {
@@ -80,6 +93,8 @@ button {
     border: none;
     border-radius: 3px;
     cursor: pointer;
+    width: 100%;
+    font-size: 16px;
 }
 
 button:hover {
@@ -91,4 +106,15 @@ footer {
     color: white;
     text-align: center;
     padding: 15px 0;
+    margin-top: auto;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+p {
+    margin-top: 10px;
+    font-size: 14px;
 }
