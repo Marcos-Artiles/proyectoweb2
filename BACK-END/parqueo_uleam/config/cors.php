@@ -8,14 +8,14 @@ return [
 
     'allowed_origins' => ['*'],  // Permitir todas las fuentes
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [''],
 
     'allowed_headers' => ['*'],  // Permitir todos los encabezados
 
-    'exposed_headers' => [],
+    'exposed_headers' => [''],
 
     'max_age' => 0,
 
-    'supports_credentials' => false, // Cambia a true si necesitas soportar cookies/autenticación
+    'supports_credentials' => true, // Cambia a true si necesitas soportar cookies/autenticación
 
 ];

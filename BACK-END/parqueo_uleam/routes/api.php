@@ -8,6 +8,7 @@ use App\Http\Controllers\PlazaController;
 use App\Http\Controllers\SoporteController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ResetController;
+use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,7 @@ use App\Http\Controllers\ResetController;
 //rutas publicas
 Route::post('/login', [AuthController::class, 'login']); //iniciar sesion
 Route::post('/registro', [RegistroController::class, 'store']); //registrarse
+Route::get('/sanctum/csrf-cookie', [CsrfCookieController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function(){
     //manejo del perfil

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css'; // Archivo de estilos CSS local
-import axiosClient from '../../backend/conexion'; // Importa Axios configurado
+import axiosClient from '../../backend/axiosClient'; // Asegúrate de que la ruta sea correcta
 import { AxiosError } from 'axios';
 
 const LoginPage: React.FC = () => {
@@ -14,9 +14,13 @@ const LoginPage: React.FC = () => {
     event.preventDefault();
 
     try {
+      // Primero, obtener el token CSRF requerido por Laravel Sanctum
+      await axiosClient.get('/sanctum/csrf-cookie');
+
       // Hacer una solicitud POST al backend para iniciar sesión
-      const response = await axiosClient.post('/api/login', { email, password });
-      
+      const response = await axiosClient.post('/login', { email, password });
+      console.log(response.data);  // Verifica que la respuesta contiene el token
+
       // Obtener el token del usuario si la autenticación fue exitosa
       const { token, user } = response.data;
 
@@ -25,7 +29,7 @@ const LoginPage: React.FC = () => {
       localStorage.setItem('user', JSON.stringify(user));
 
       // Redirigir al usuario según su rol o página principal
-      if (user.role === 'admin') {
+      if (user.isAdmin === 1) {
         navigate('/AdministratorPage');
       } else {
         navigate('/UserProfile');
@@ -68,11 +72,11 @@ const LoginPage: React.FC = () => {
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="correo">Correo:</label>
+              <label htmlFor="email">Correo:</label>
               <input
-                type="text"
-                id="correo"
-                name="correo"
+                type="email"
+                id="email"
+                name="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

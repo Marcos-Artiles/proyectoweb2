@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Plaza;
 
 class RegistroController extends Controller
 {
@@ -17,30 +16,14 @@ class RegistroController extends Controller
             'password' => 'required',
         ]);
 
-        // Verificar si hay plazas disponibles
-        $plazaDisponible = Plaza::where('disponible', true)->first();
-
-        if (!$plazaDisponible) {
-            return response()->json(['message' => 'No hay plazas disponibles en este momento'], 400);
-        }
-
-        // Crear el usuario y asignarle una plaza
+        // Insertar el registro en la base de datos
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password); // Encriptar la contraseña
-        $user->plaza_id = $plazaDisponible->id; // Asignar la plaza disponible
         $user->save();
 
-        // Actualizar la disponibilidad de la plaza
-        $plazaDisponible->disponible = false;
-        $plazaDisponible->save();
-
         // Responder con un mensaje de éxito
-        return response()->json([
-            'message' => 'Registro creado con éxito y plaza asignada',
-            'user' => $user,
-            'plaza' => $plazaDisponible,
-        ], 201);
+        return response()->json(['message' => 'Registro creado con éxito'], 201);
     }
 }

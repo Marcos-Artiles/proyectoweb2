@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import './RegisterPage.css'; // Importa el archivo de estilos CSS local
-import axiosClient from '../../backend/conexion'; // Asegúrate de que la ruta a `conexion.js` sea correcta
+import './RegisterPage.css';
+import axiosClient from '../../backend/axiosClient'; // Asegúrate de que la ruta sea correcta
 
 const RegisterPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -17,40 +17,44 @@ const RegisterPage: React.FC = () => {
     event.preventDefault();
     if (validateForm()) {
       try {
-        // Primero, solicitar el token CSRF
-        await axiosClient.get('/sanctum/csrf-cookie');
-
-        // Realizar una solicitud POST al backend para registrar el usuario
-        const response = await axiosClient.post('/api/registro', {
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        });
-
-        setSuccessMessage('Registro exitoso. ¡Bienvenido!');
+        await axiosClient.get('/sanctum/csrf-cookie'); // Solicita el token CSRF
+        const response = await axiosClient.post('/registro', formData); // Envía los datos de registro
+        setSuccessMessage(response.data.message || 'Registro exitoso. ¡Bienvenido!');
         setErrorMessage('');
-        setFormData({
-          name: '',
-          email: '',
-          password: '',
-          confirmPassword: '',
-        });
-      } catch (error) {
-        setErrorMessage('Hubo un error al registrar. Por favor, intenta nuevamente.');
-        setSuccessMessage('');
+      } catch (error: any) {
+        if (error.response) {
+          setErrorMessage(error.response.data.message || 'Error al registrar. Intenta nuevamente.');
+        } else {
+          setErrorMessage('Error de red. Por favor, verifica tu conexión.');
+        }
         console.error('Error al registrar:', error);
+      } finally {
+        resetForm(); // Limpiar formulario siempre
       }
     }
   };
 
   const validateForm = () => {
-    const { password, confirmPassword } = formData;
-
+    const { password, confirmPassword, email } = formData;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Validar formato de correo
+    if (!emailRegex.test(email)) {
+      setErrorMessage('Por favor ingresa un correo válido.');
+      return false;
+    }
     if (password !== confirmPassword) {
       setErrorMessage('Las contraseñas no coinciden.');
       return false;
     }
     return true;
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    });
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,65 +74,52 @@ const RegisterPage: React.FC = () => {
 
       <div className="register-container">
         <h2>Registro de Usuario</h2>
-
-        <form id="registrationForm" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className="register-form-group">
-            <label className="register-label" htmlFor="correo">Correo:</label>
-            <input 
-              className="register-input-text" 
-              type="email" 
-              id="correo" 
-              name="email" 
+            <label htmlFor="email">Correo:</label>
+            <input
+              type="email"
+              name="email"
               value={formData.email}
               onChange={handleChange}
-              required 
+              required
             />
           </div>
           <div className="register-form-group">
-            <label className="register-label" htmlFor="password">Contraseña:</label>
-            <input 
-              className="register-input-password" 
-              type="password" 
-              id="password" 
+            <label htmlFor="password">Contraseña:</label>
+            <input
+              type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              required 
+              required
             />
           </div>
           <div className="register-form-group">
-            <label className="register-label" htmlFor="confirmPassword">Confirmar Contraseña:</label>
-            <input 
-              className="register-input-password" 
-              type="password" 
-              id="confirmPassword" 
+            <label htmlFor="confirmPassword">Confirmar Contraseña:</label>
+            <input
+              type="password"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              required 
+              required
             />
           </div>
           <div className="register-form-group">
-            <label className="register-label" htmlFor="name">Nombre:</label>
-            <input 
-              className="register-input-text" 
-              type="text" 
-              id="name" 
+            <label htmlFor="name">Nombre:</label>
+            <input
+              type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              required 
+              required
             />
           </div>
-          <button className="register-button" type="submit">Registrarse</button>
-          {errorMessage && <p className="register-error-msg">{errorMessage}</p>}
-          {successMessage && <p className="register-success-msg">{successMessage}</p>}
+          <button type="submit">Registrarse</button>
+          {errorMessage && <p>{errorMessage}</p>}
+          {successMessage && <p>{successMessage}</p>}
         </form>
       </div>
-
-      <footer className="register-footer">
-        <p>© 2024 Artiles Enriquez Marcos Javier. Todos los derechos reservados.</p>
-      </footer>
     </>
   );
 };

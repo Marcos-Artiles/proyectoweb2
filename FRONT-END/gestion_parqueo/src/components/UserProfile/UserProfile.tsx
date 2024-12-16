@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import './UserProfile.css'; // Importa el archivo de estilos CSS local
+import './UserProfile.css'; // Asegúrate de que la ruta sea correcta
 import { Link, useNavigate } from 'react-router-dom';
-import axiosClient from "../../backend/conexion"; // Asegúrate de que la ruta a `conexion.js` sea correcta.
+import axiosClient from '../../backend/axiosClient'; // Asegúrate de que la ruta sea correcta
 
 const UserProfile: React.FC = () => {
   const [correo, setCorreo] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
-  const [matricula, setMatricula] = useState<string>('');
-  const [colorCarro, setColorCarro] = useState<string>('');
   const [plazaAsignada, setPlazaAsignada] = useState<string>(''); // Estado para la plaza asignada
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -19,17 +17,23 @@ const UserProfile: React.FC = () => {
     const fetchUserProfile = async () => {
       setLoading(true);
       try {
-        const response = await axiosClient.get('/profile');
-        const data = response.data;
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          setError('No se ha encontrado el token de autenticación');
+          return;
+        }
 
-        setCorreo(data.correo);
-        setPassword(data.password);
-        setConfirmPassword(data.password); // Confirmar contraseña por defecto
-        setMatricula(data.matricula);
-        setColorCarro(data.colorCarro);
-        setPlazaAsignada(data.plaza || ''); // Asignar plaza si existe
+        const response = await axiosClient.get('/profile', {
+          headers: {
+            Authorization: `Bearer ${token}`, // Aquí agregamos el token en el encabezado
+          },
+        });
+        
+        setCorreo(response.data.user.email);
+        setPlazaAsignada(response.data.user.plaza ? response.data.user.plaza.codigo_plaza : 'Sin plaza asignada');
       } catch (error) {
-        setError("Error al cargar el perfil del usuario.");
+        setError('Error al cargar el perfil del usuario.');
         console.error(error);
       } finally {
         setLoading(false);
@@ -60,8 +64,6 @@ const UserProfile: React.FC = () => {
         const payload = {
           correo,
           password,
-          matricula,
-          colorCarro,
           plaza: plazaAsignada, // Actualizar la plaza asignada si es necesario
         };
         // Enviar los datos al backend
@@ -78,22 +80,12 @@ const UserProfile: React.FC = () => {
 
   // Validar el formulario antes de enviar
   const validateForm = (): boolean => {
-    const lettersOnly: RegExp = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-
-    if (!lettersOnly.test(colorCarro)) {
-      alert("El campo Color del Carro solo puede contener letras.");
-      return false;
-    }
     if (password !== confirmPassword) {
       alert("Las contraseñas no coinciden.");
       return false;
     }
-
     return true;
   };
-
-  // Aquí defines plazasDisponibles como una lista de ejemplo
-  const plazasDisponibles: string[] = ["A-1", "B-2", "C-8"];
 
   return (
     <div>
@@ -105,7 +97,7 @@ const UserProfile: React.FC = () => {
             <nav>
               <ul>
                 <li>
-                  <button onClick={handleLogout}>Inicio</button> {/* Botón que llama a handleLogout */}
+                  <button onClick={handleLogout}>Cerrar Sesión</button> {/* Botón para cerrar sesión */}
                 </li>
               </ul>
             </nav>
@@ -148,28 +140,6 @@ const UserProfile: React.FC = () => {
                 required
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="matricula">Matrícula:</label>
-              <input
-                type="text"
-                id="matricula"
-                name="matricula"
-                value={matricula}
-                onChange={(e) => setMatricula(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="colorCarro">Color del Carro:</label>
-              <input
-                type="text"
-                id="colorCarro"
-                name="colorCarro"
-                value={colorCarro}
-                onChange={(e) => setColorCarro(e.target.value)}
-                required
-              />
-            </div>
             <button type="submit">Actualizar Datos</button>
           </form>
         </div>
@@ -183,16 +153,6 @@ const UserProfile: React.FC = () => {
         <div>
           <button><Link to="/SoportePage">Soporte</Link></button>
         </div>
-      </div>
-
-      {/* Nuevo div para mostrar las plazas disponibles */}
-      <div className="plazas-disponibles">
-        <h2>Plazas Disponibles</h2>
-        <ul>
-          {plazasDisponibles.map((plaza, index) => (
-            <li key={index}>{plaza}</li>
-          ))}
-        </ul>
       </div>
 
       <footer>
