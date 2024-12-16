@@ -20,5 +20,7 @@ class VerifyCsrfToken extends Middleware
         'api/plazas',
         'api/plaza',
         'api/reset-plazas',
+        'api/asignar-plaza',
+        'api/plazas/{id}'
     ];
 }

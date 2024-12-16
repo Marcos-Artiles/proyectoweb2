@@ -31,20 +31,20 @@ class PlazaController extends Controller
         return response()->json($plazas);
     }
 
-    // Crear una nueva plaza
     public function store(Request $request)
     {
         $verificacion = $this->verificarAdministrador();
         if ($verificacion) return $verificacion;
-
+    
         $request->validate([
             'codigo_plaza' => 'required|unique:plazas,codigo_plaza',
         ]);
-
+    
         $plaza = new Plaza();
         $plaza->codigo_plaza = $request->codigo_plaza;
+        $plaza->disponible = true; // Asegúrate de establecer un valor predeterminado para "disponible"
         $plaza->save();
-
+    
         return response()->json(['message' => 'Plaza creada con éxito', 'plaza' => $plaza], 201);
     }
 

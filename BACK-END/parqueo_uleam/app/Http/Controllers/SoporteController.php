@@ -73,42 +73,44 @@ class SoporteController extends Controller
         return response()->json(['message' => 'Estado de la solicitud actualizado', 'soporte' => $soporte], 200);
     }
 
-    // Asignar una plaza a un usuario
-    public function asignarPlaza(Request $request)
+        public function asignarPlaza(Request $request)
     {
         $verificacion = $this->verificarAdministrador();
         if ($verificacion) return $verificacion;
-
+    
         // Validar los datos de la solicitud
         $request->validate([
-            'codigo_plaza' => 'required|string|max:10', // Código de la plaza a asignar
-            'user_id' => 'required|exists:users,id',    // Usuario al que se asignará la plaza
+            'codigo_plaza' => 'required|string|max:10', // Código de la plaza
+            'email' => 'required|email|exists:users,email', // Email del usuario
         ]);
-
+    
+        // Buscar al usuario por email
+        $usuario = User::where('email', $request->email)->first();
+        if (!$usuario) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+    
         // Buscar la plaza solicitada
         $plaza = Plaza::where('codigo_plaza', $request->codigo_plaza)->first();
-
+    
         // Verificar si la plaza existe y está disponible
         if (!$plaza || !$plaza->disponible) {
             return response()->json(['message' => 'La plaza no está disponible o no existe'], 400);
         }
-
-        // Buscar al usuario
-        $usuario = User::find($request->user_id);
-
+    
         // Verificar si el usuario ya tiene una plaza asignada
         if ($usuario->plaza_id) {
             return response()->json(['message' => 'El usuario ya tiene una plaza asignada'], 400);
         }
-
+    
         // Asignar la plaza al usuario
         $usuario->plaza_id = $plaza->id;
         $usuario->save();
-
+    
         // Actualizar la disponibilidad de la plaza
         $plaza->disponible = false;
         $plaza->save();
-
+    
         // Retornar una respuesta de éxito
         return response()->json([
             'message' => 'Plaza asignada con éxito',

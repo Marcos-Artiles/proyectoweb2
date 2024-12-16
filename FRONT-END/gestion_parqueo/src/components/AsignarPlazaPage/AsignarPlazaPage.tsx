@@ -1,98 +1,183 @@
 import React, { useState, useEffect } from 'react';
-import './AsignarPlazaPage.css'; // Asegúrate de que la ruta sea correcta para tu archivo CSS
+import './AsignarPlazaPage.css';
 import { Link } from 'react-router-dom';
-import axiosClient from '../../backend/axiosClient'; // Asegúrate de que la ruta sea correcta
+import axiosClient from '../../backend/axiosClient';
 
 const AsignarPlazaPage: React.FC = () => {
-  const [matricula, setMatricula] = useState('');
+  const [correo, setCorreo] = useState(''); // Cambiado de matricula a correo
   const [plaza, setPlaza] = useState('');
-  const [plazaId, setPlazaId] = useState(''); // Estado para la plaza a borrar o actualizar
-  const [codigoPlaza, setCodigoPlaza] = useState(''); // Estado para la nueva plaza a crear o actualizar
-  const [disponibilidad, setDisponibilidad] = useState(false); // Estado para actualizar disponibilidad
+  const [plazaId, setPlazaId] = useState('');
+  const [codigoPlaza, setCodigoPlaza] = useState('');
+  const [disponibilidad, setDisponibilidad] = useState(false);
   const [message, setMessage] = useState('');
   const [plazasDisponibles, setPlazasDisponibles] = useState<any[]>([]);
 
-  // Obtener las plazas disponibles desde el backend
-  useEffect(() => {
-    const fetchPlazasDisponibles = async () => {
+    // Obtener plazas disponibles al cargar la página
+    useEffect(() => {
+      const fetchPlazasDisponibles = async () => {
+        try {
+          const token = localStorage.getItem('token');
+          if (!token) {
+            setMessage('No se encontró el token de autenticación.');
+            return;
+          }
+  
+          const response = await axiosClient.get('/plazas', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+  
+          setPlazasDisponibles(response.data);
+        } catch (error: any) {
+          console.error('Error al obtener las plazas:', error);
+          setMessage('Error al cargar las plazas disponibles.');
+        }
+      };
+  
+      fetchPlazasDisponibles();
+    }, []);
+
+    const handleAsignarPlaza = async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+    
       try {
-        await axiosClient.get('/sanctum/csrf-cookie'); // Solicita el token CSRF
-        const response = await axiosClient.get('/plazas');
-        setPlazasDisponibles(response.data); // Asignar las plazas disponibles
-      } catch (error) {
-        console.error('Error al obtener las plazas:', error);
+        const token = localStorage.getItem('token');
+        if (!token) return;
+    
+        const payload = { email: correo, codigo_plaza: plaza }; // Ajusta el payload
+        const response = await axiosClient.put('/asignar-plaza', payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+    
+        setMessage(`Plaza ${plaza} asignada correctamente.`);
+        setCorreo('');
+        setPlaza('');
+      } catch (error: any) {
+        console.error('Error al asignar plaza:', error);
+        setMessage(`Error: ${error.response?.data.message || 'No se pudo asignar la plaza.'}`);
       }
     };
 
-    fetchPlazasDisponibles();
-  }, []); // Cargar las plazas disponibles al iniciar
-
-  const handleAsignarPlaza = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    try {
-      await axiosClient.get('/sanctum/csrf-cookie'); // Solicita el token CSRF
-      const response = await axiosClient.put('/asignar-plaza', { matricula, plaza });
-      setMessage(`Plaza ${plaza} asignada correctamente.`);
-      setMatricula('');
-      setPlaza('');
-    } catch (error: any) {
-      setMessage(`Error: ${error.response?.data.message || 'No se pudo asignar la plaza'}`);
-    }
-  };
-
+  // Crear una nueva plaza
   const handleCrearPlaza = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      await axiosClient.get('/sanctum/csrf-cookie'); // Solicita el token CSRF
-      const response = await axiosClient.post('/plazas', { codigo_plaza: codigoPlaza });
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await axiosClient.post(
+        '/plazas',
+        { codigo_plaza: codigoPlaza },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       setMessage(`Plaza ${codigoPlaza} creada con éxito.`);
       setCodigoPlaza('');
     } catch (error: any) {
-      setMessage(`Error: ${error.response?.data.message || 'No se pudo crear la plaza'}`);
+      console.error(error);
+      setMessage(`Error: ${error.response?.data.message || 'No se pudo crear la plaza.'}`);
     }
   };
 
   const handleBorrarPlaza = async () => {
     try {
       await axiosClient.get('/sanctum/csrf-cookie'); // Solicita el token CSRF
-      const response = await axiosClient.delete(`/plazas/${plazaId}`);
+  
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setMessage('Token de autenticación no encontrado.');
+        return;
+      }
+  
+      // Realizar la solicitud DELETE con el token CSRF
+      const response = await axiosClient.delete(`/plazas/${plazaId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Asegúrate de enviar el token de autenticación
+        },
+      });
+  
       setMessage(`Plaza con ID ${plazaId} eliminada con éxito.`);
       setPlazaId('');
     } catch (error: any) {
-      setMessage(`Error: ${error.response?.data.message || 'No se pudo eliminar la plaza'}`);
+      console.error('Error al borrar plaza:', error);
+      setMessage(`Error: ${error.response?.data.message || 'No se pudo eliminar la plaza.'}`);
     }
   };
 
+  // Actualizar una plaza
   const handleActualizarPlaza = async () => {
     try {
-      await axiosClient.get('/sanctum/csrf-cookie'); // Solicita el token CSRF
-      const response = await axiosClient.put(`/plaza/${plazaId}`, { codigo_plaza: codigoPlaza });
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await axiosClient.put(
+        `/plaza/${plazaId}`,
+        { codigo_plaza: codigoPlaza },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       setMessage(`Plaza con ID ${plazaId} actualizada correctamente.`);
       setPlazaId('');
       setCodigoPlaza('');
     } catch (error: any) {
-      setMessage(`Error: ${error.response?.data.message || 'No se pudo actualizar la plaza'}`);
+      console.error(error);
+      setMessage(`Error: ${error.response?.data.message || 'No se pudo actualizar la plaza.'}`);
     }
   };
 
+  // Actualizar disponibilidad de una plaza
   const handleActualizarDisponibilidad = async () => {
     try {
-      await axiosClient.get('/sanctum/csrf-cookie'); // Solicita el token CSRF
-      const response = await axiosClient.put(`/plaza/${plazaId}/disponibilidad`, { disponible: disponibilidad });
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await axiosClient.put(
+        `/plaza/${plazaId}/disponibilidad`,
+        { disponible: disponibilidad },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       setMessage(`Disponibilidad de plaza con ID ${plazaId} actualizada.`);
       setPlazaId('');
     } catch (error: any) {
-      setMessage(`Error: ${error.response?.data.message || 'No se pudo actualizar la disponibilidad'}`);
+      console.error(error);
+      setMessage(`Error: ${error.response?.data.message || 'No se pudo actualizar la disponibilidad.'}`);
     }
   };
 
+  // Reiniciar todas las plazas
   const handleReiniciarPlazas = async () => {
     try {
-      await axiosClient.get('/sanctum/csrf-cookie'); // Solicita el token CSRF
-      const response = await axiosClient.post('/reset-plazas', {});
-      setMessage(`Estado de todas las plazas reiniciado.`);
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await axiosClient.post(
+        '/reset-plazas',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setMessage('Estado de todas las plazas reiniciado.');
     } catch (error: any) {
-      setMessage(`Error: ${error.response?.data.message || 'No se pudo reiniciar las plazas'}`);
+      console.error(error);
+      setMessage(`Error: ${error.response?.data.message || 'No se pudo reiniciar las plazas.'}`);
     }
   };
 
@@ -114,13 +199,13 @@ const AsignarPlazaPage: React.FC = () => {
           <h2>Asignar Plaza</h2>
           <form onSubmit={handleAsignarPlaza}>
             <div className="form-group">
-              <label htmlFor="matricula">Matrícula:</label>
+              <label htmlFor="correo">Correo:</label>
               <input
                 type="text"
-                id="matricula"
-                name="matricula"
-                value={matricula}
-                onChange={(e) => setMatricula(e.target.value)}
+                id="correo"
+                name="correo"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
                 required
               />
             </div>
